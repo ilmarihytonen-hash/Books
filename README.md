@@ -33,3 +33,5 @@ device lockdown.
 
 Build the Windows executable on Windows with `build_windows.bat`. The executable
 is generated locally and is not checked into this source tree.
+
+Note that some of the code was writen with copilot but mostly was made by humans and mostly copilot has been used for bugfixes.
