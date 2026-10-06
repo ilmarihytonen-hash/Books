@@ -1,0 +1,44 @@
+name: Build Windows executable
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Build executable
+        shell: cmd
+        run: >-
+          python -m PyInstaller --clean --noconfirm --onefile --windowed
+          --name Bookapp
+          --add-data "urls.yaml;."
+          --add-data "config.json;."
+          --add-data "languages\en.json;languages"
+          --add-data "languages\fi.json;languages"
+          --add-data "languages\sv.json;languages"
+          launcher.py
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bookapp-windows
+          path: dist/Bookapp.exe
+          if-no-files-found: error
+          retention-days: 30
