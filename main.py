@@ -87,6 +87,7 @@ class MainWindow(QMainWindow):
         url_row.addWidget(self.url_list, stretch=1)
         self.remove_button = QPushButton()
         self.remove_button.setObjectName("removeUrl")
+        self.remove_button.setStyleSheet("color: #ffffff;")
         self.remove_button.setMinimumHeight(44)
         self.remove_button.clicked.connect(self._remove_url)
         url_row.addWidget(self.remove_button)

@@ -256,6 +256,7 @@ class ModernApp(QMainWindow):
 
         self.remove_url_button = QPushButton()
         self.remove_url_button.setObjectName("removeUrl")
+        self.remove_url_button.setStyleSheet("color: #ffffff;")
         self.remove_url_button.setMinimumHeight(40)
         self.remove_url_button.clicked.connect(self._remove_url)
         toolbar_layout.addWidget(self.remove_url_button)
