@@ -23,6 +23,7 @@ from app_logging import configure_logging
 from app_theme import apply_app_theme
 from i18n import LANGUAGE_NAMES, translate
 from saver import add_url, get_all_urls, get_language, normalize_url, set_language
+from webengine import ModernApp
 
 logger = logging.getLogger(__name__)
 
@@ -167,8 +168,6 @@ class MainWindow(QMainWindow):
             self.status_label.setText(translate(self.language, "no_urls"))
             return
         try:
-            from webengine import ModernApp
-
             logger.info(
                 "Launching browser for %s (exam_mode=%s)",
                 selected_url,

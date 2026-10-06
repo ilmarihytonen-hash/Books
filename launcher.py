@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QProgressBar, QVBoxLayout, QWi
 from app_logging import configure_logging
 from app_theme import apply_app_theme
 from i18n import translate
+from main import MainWindow
 from saver import get_language
 
 logger = logging.getLogger(__name__)
@@ -108,8 +109,6 @@ class ConfigurableSplashScreen(QWidget):
             self._launch_main_application()
 
     def _launch_main_application(self):
-        from main import MainWindow
-
         logger.info("Splash screen complete; opening application menu")
         self.main_window = MainWindow(language=self.language)
         self.close()
