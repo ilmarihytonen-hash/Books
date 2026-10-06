@@ -21,8 +21,16 @@ from PyQt6.QtWidgets import (
 
 from app_logging import configure_logging
 from app_theme import apply_app_theme
+from configreader import load_config
 from i18n import LANGUAGE_NAMES, translate
-from saver import add_url, get_all_urls, get_language, normalize_url, set_language
+from saver import (
+    add_url,
+    get_all_urls,
+    get_language,
+    normalize_url,
+    remove_url,
+    set_language,
+)
 from webengine import ModernApp
 
 logger = logging.getLogger(__name__)
@@ -42,8 +50,14 @@ class MainWindow(QMainWindow):
                 self, "Bookapp", translate("en", "load_failed", error=error)
             )
 
-        self.setMinimumSize(480, 440)
+        self.setMinimumSize(520, 640)
+        self.resize(640, 720)
         self.setWindowTitle(translate(self.language, "app_title"))
+        try:
+            self.config = load_config()
+        except Exception:
+            logger.exception("Could not load application configuration")
+            self.config = {}
         self.browser_window = None
         self._create_ui()
         self._refresh_text()
@@ -69,11 +83,19 @@ class MainWindow(QMainWindow):
         )
         self.url_list.setMinimumHeight(110)
         self.url_list.setMaximumHeight(160)
-        layout.addWidget(self.url_list)
+        url_row = QHBoxLayout()
+        url_row.addWidget(self.url_list, stretch=1)
+        self.remove_button = QPushButton()
+        self.remove_button.setObjectName("removeUrl")
+        self.remove_button.setMinimumHeight(44)
+        self.remove_button.clicked.connect(self._remove_url)
+        url_row.addWidget(self.remove_button)
+        layout.addLayout(url_row)
 
         self.new_url_input = QLineEdit()
         layout.addWidget(self.new_url_input)
         self.save_button = QPushButton()
+        self.save_button.setMinimumHeight(44)
         self.save_button.clicked.connect(self._save_url)
         layout.addWidget(self.save_button)
 
@@ -103,6 +125,9 @@ class MainWindow(QMainWindow):
         self.status_label.setWordWrap(True)
         self.status_label.setStyleSheet("color: #a6adc8;")
         layout.addWidget(self.status_label)
+        self.version_label = QLabel()
+        self.version_label.setStyleSheet("color: #a6adc8; font-size: 12px;")
+        layout.addWidget(self.version_label)
         self.setCentralWidget(content)
 
     def _refresh_text(self):
@@ -112,13 +137,19 @@ class MainWindow(QMainWindow):
         self.url_label.setText(t("choose_url"))
         self.new_url_input.setPlaceholderText(t("new_url"))
         self.save_button.setText(t("save_url"))
+        self.remove_button.setText(t("remove_url"))
         self.language_label.setText(t("language"))
         self.exam_checkbox.setText(t("exam_mode"))
         self.launch_button.setText(t("launch_browser"))
+        version = self.config.get("version_number", "unknown")
+        self.version_label.setText(
+            translate(self.language, "project_version", version=version)
+        )
 
     def _populate_urls(self, selected=None):
         self.url_list.clear()
         self.url_list.addItems(self.urls)
+        self.remove_button.setEnabled(bool(self.urls))
         if selected:
             matches = self.url_list.findItems(
                 selected, Qt.MatchFlag.MatchExactly
@@ -126,7 +157,51 @@ class MainWindow(QMainWindow):
             if matches:
                 self.url_list.setCurrentItem(matches[0])
         elif self.url_list.count():
-            self.url_list.setCurrentRow(0)
+            configured_home = self.config.get("home_url", "")
+            matches = (
+                self.url_list.findItems(
+                    configured_home, Qt.MatchFlag.MatchExactly
+                )
+                if configured_home
+                else []
+            )
+            if matches:
+                self.url_list.setCurrentItem(matches[0])
+            else:
+                self.url_list.setCurrentRow(0)
+
+    def _remove_url(self):
+        selected_item = self.url_list.currentItem()
+        if not selected_item:
+            self.status_label.setText(
+                translate(self.language, "select_url_to_remove")
+            )
+            return
+
+        url = selected_item.text()
+        answer = QMessageBox.question(
+            self,
+            translate(self.language, "url_remove_confirm_title"),
+            translate(self.language, "url_remove_confirm", url=url),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+
+        try:
+            if not remove_url(url):
+                raise ValueError("The website is not in the saved URL list")
+            self.urls = get_all_urls()
+            self._populate_urls()
+            self.status_label.setText(translate(self.language, "url_removed"))
+        except Exception as error:
+            logger.exception("Could not remove website")
+            QMessageBox.critical(
+                self,
+                translate(self.language, "app_title"),
+                translate(self.language, "url_remove_failed", error=error),
+            )
 
     def _language_changed(self, index):
         code = self.language_combo.itemData(index)

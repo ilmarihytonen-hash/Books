@@ -14,6 +14,36 @@ and create `dist\Bookapp.exe`. You can also install `requirements.txt` and run
 Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly.
 `logs\bookapp.log` contains timestamped Linux-style application logs.
 
+## Website logins and feedback
+
+Use the browser's top-left **Menu** for Home, the GNU GPL v3 license, Help,
+Feedback, Settings, and **Manage logins**. In Settings, change the interface
+language, default website, browser zoom, feedback destination, and feedback
+button text. Saved preferences are stored in `config.json` beside the app;
+Feedback can also be configured there.
+
+Select **Manage logins** to save credentials for the current HTTPS website.
+Login data is encrypted with Windows Data Protection and can only be decrypted
+by the same Windows user on this computer. Select **Fill fields** to fill
+matching visible login fields; Bookapp never submits the form automatically.
+The encrypted data is stored in `logins.dat` beside the application.
+
+To configure the **Feedback** button, edit `config.json` beside `Bookapp.exe`
+and set `feedback_url` to an HTTPS link or a `mailto:` address. Set
+`feedback_label` to customize the button text. For example:
+
+```json
+{
+  "feedback_url": "mailto:feedback@example.com",
+  "feedback_label": "Report a problem"
+}
+```
+
+The destination is read when the menu item is clicked; restart Bookapp after
+changing the button label in the config file. A local `build_windows.bat` build
+copies `config.json` beside the executable. With Python/source runs, edit the
+project `config.json`.
+
 ## Download a release
 
 The executable is not committed to Git because the packaged Qt WebEngine app is

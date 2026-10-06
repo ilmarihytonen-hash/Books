@@ -43,5 +43,7 @@
     "cluster_enabled": false,
     "cluster_discovery_cidr": "",
     "cluster_discovery_port": 8000,
-    "cluster_replication_mode": "primary-replica"
+    "cluster_replication_mode": "primary-replica",
+    "feedback_url": "",
+    "feedback_label": ""
 }

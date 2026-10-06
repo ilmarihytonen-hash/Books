@@ -21,5 +21,11 @@ if errorlevel 1 (
     exit /b 1
 )
 
+copy /Y config.json dist\config.json >nul
+if errorlevel 1 (
+    echo Failed to copy config.json beside the executable.
+    exit /b 1
+)
+
 echo Build complete: dist\Bookapp.exe
 endlocal
