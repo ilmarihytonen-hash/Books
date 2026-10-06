@@ -14,13 +14,24 @@ and create `dist\Bookapp.exe`. You can also install `requirements.txt` and run
 Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly.
 `logs\bookapp.log` contains timestamped Linux-style application logs.
 
-## Download the Windows executable
+## Download a release
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
-larger than GitHub's standard file-size limit. GitHub Actions builds it when
-changes are pushed to `main`. To download it, open the repository's **Actions**
-tab, select the latest successful **Build Windows executable** run, and download
-the `Bookapp-windows` artifact. Artifacts are retained for 30 days.
+larger than GitHub's standard file-size limit. Push a version tag such as
+`v1.0.0` to build and publish a release:
+
+```text
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The release contains two uploaded assets: `Bookapp.exe` (the full Windows app)
+and `Bookapp-source-v1.0.0.zip` (the source tree). Download them separately from
+the repository's **Releases** page. GitHub also automatically provides generated
+source-code archive links; those are separate from the two uploaded assets.
+
+Pushes to `main` still build a temporary `Bookapp-windows` artifact, available
+from the workflow run for 30 days.
 
 ## Exam mode
 
@@ -33,5 +44,3 @@ device lockdown.
 
 Build the Windows executable on Windows with `build_windows.bat`. The executable
 is generated locally and is not checked into this source tree.
-
-Note that some of the code was writen with copilot but mostly was made by humans and mostly copilot has been used for bugfixes.

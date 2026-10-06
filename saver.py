@@ -10,7 +10,7 @@ from app_paths import resource_path, writable_path
 
 logger = logging.getLogger(__name__)
 FILENAME = writable_path("urls.yaml")
-DEFAULT_DATA = {"title": "Bookapp", "language": "en", "urls": ["https://nova.otava.fi"]}
+DEFAULT_DATA = {"title": "Bookapp", "language": "en", "urls": []}
 
 
 def normalize_url(url):
