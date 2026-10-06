@@ -14,6 +14,12 @@ _MAGIC = b"BOOKAPP-DPAPI-1\n"
 _CRYPTPROTECT_UI_FORBIDDEN = 0x1
 
 
+def password_saving_enabled():
+    from configreader import load_config
+
+    return load_config().get("password_saving_enabled", True) is True
+
+
 class _DataBlob(ctypes.Structure):
     _fields_ = [
         ("cbData", wintypes.DWORD),
@@ -152,10 +158,14 @@ def _save_logins(logins):
 
 
 def get_login(url):
+    if not password_saving_enabled():
+        return None
     return _load_logins().get(origin_for_url(url))
 
 
 def save_login(url, username, password):
+    if not password_saving_enabled():
+        raise PermissionError("Password saving is disabled in Bookapp settings")
     if not username or not password:
         raise ValueError("Enter both a username and a password")
     logins = _load_logins()
@@ -174,3 +184,10 @@ def remove_login(url):
     del logins[origin]
     _save_logins(logins)
     return True
+
+
+def clear_logins():
+    try:
+        os.remove(FILENAME)
+    except FileNotFoundError:
+        return

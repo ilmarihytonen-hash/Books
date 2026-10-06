@@ -1,22 +1,22 @@
-"""Editable browser and feedback preferences."""
+"""Editable browser and password-saving preferences."""
 
 import logging
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
     QFormLayout,
     QLabel,
-    QLineEdit,
     QMessageBox,
     QSlider,
     QVBoxLayout,
 )
-from PyQt6.QtCore import Qt
 
 from configreader import load_config, save_config
-from feedback import is_valid_feedback_destination
+from credential_store import clear_logins
 from i18n import LANGUAGE_NAMES, translate
 from saver import add_url, get_all_urls, normalize_url, set_language
 
@@ -79,26 +79,15 @@ class SettingsDialog(QDialog):
         zoom_row.addWidget(self.zoom_value)
         form.addRow(translate(self.language, "settings_zoom"), zoom_row)
 
-        self.feedback_url_input = QLineEdit(
-            self._configured_text(self.config.get("feedback_url", ""))
+        self.password_saving_checkbox = QCheckBox(
+            translate(self.language, "settings_password_saving_description")
         )
-        self.feedback_url_input.setPlaceholderText(
-            translate(self.language, "settings_feedback_url_hint")
-        )
-        form.addRow(
-            translate(self.language, "settings_feedback_url"),
-            self.feedback_url_input,
-        )
-
-        self.feedback_label_input = QLineEdit(
-            self._configured_text(self.config.get("feedback_label", ""))
-        )
-        self.feedback_label_input.setPlaceholderText(
-            translate(self.language, "settings_feedback_label_hint")
+        self.password_saving_checkbox.setChecked(
+            self.config.get("password_saving_enabled", True) is True
         )
         form.addRow(
-            translate(self.language, "settings_feedback_label"),
-            self.feedback_label_input,
+            translate(self.language, "settings_password_saving"),
+            self.password_saving_checkbox,
         )
 
         self.status_label = QLabel()
@@ -115,10 +104,6 @@ class SettingsDialog(QDialog):
         layout.addWidget(buttons)
 
     @staticmethod
-    def _configured_text(value):
-        return value if isinstance(value, str) else ""
-
-    @staticmethod
     def _configured_zoom(value):
         try:
             zoom = int(value)
@@ -127,12 +112,23 @@ class SettingsDialog(QDialog):
         return max(50, min(150, round(zoom / 10) * 10))
 
     def _save(self):
-        feedback_url = self.feedback_url_input.text().strip()
-        if not is_valid_feedback_destination(feedback_url):
-            self.status_label.setText(
-                translate(self.language, "feedback_invalid")
+        password_saving_enabled = self.password_saving_checkbox.isChecked()
+        if (
+            self.config.get("password_saving_enabled", True) is True
+            and not password_saving_enabled
+        ):
+            answer = QMessageBox.question(
+                self,
+                translate(self.language, "settings_password_saving"),
+                translate(
+                    self.language, "settings_password_saving_disable_confirm"
+                ),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
             )
-            return
+            if answer != QMessageBox.StandardButton.Yes:
+                self.password_saving_checkbox.setChecked(True)
+                return
 
         home_url = self.home_url_combo.currentData()
         if not home_url:
@@ -149,15 +145,14 @@ class SettingsDialog(QDialog):
         updated_config = dict(self.config)
         updated_config["home_url"] = home_url
         updated_config["browser_zoom"] = self.zoom_slider.value()
-        updated_config["feedback_url"] = feedback_url
-        updated_config["feedback_label"] = (
-            self.feedback_label_input.text().strip()
-        )
+        updated_config["password_saving_enabled"] = password_saving_enabled
 
         try:
             if home_url and home_url not in get_all_urls():
                 add_url(home_url)
             save_config(updated_config)
+            if not password_saving_enabled:
+                clear_logins()
             set_language(self.language_combo.currentData())
         except Exception as error:
             logger.exception("Could not save application settings")

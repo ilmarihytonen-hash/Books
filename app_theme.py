@@ -23,8 +23,8 @@ QLineEdit, QComboBox {
     selection-background-color: #89b4fa;
 }
 QPushButton {
-    background-color: #89b4fa;
-    color: #11111b;
+    background-color: #313244;
+    color: #cdd6f4;
     border: 2px solid #89b4fa;
     border-radius: 6px;
     min-height: 42px;
@@ -32,27 +32,27 @@ QPushButton {
     font-weight: 600;
 }
 QPushButton * {
-    color: #11111b;
+    color: #cdd6f4;
 }
 QPushButton:hover {
-    background-color: #b4befe;
+    background-color: #45475a;
     border-color: #b4befe;
 }
 QPushButton:disabled {
-    background-color: #45475a;
-    color: #cdd6f4;
-    border-color: #45475a;
+    background-color: #313244;
+    color: #a6adc8;
+    border-color: #585b70;
 }
 QPushButton#quitExam {
     background-color: #f38ba8;
-    color: #11111b;
+    color: #1e1e2e;
 }
 QPushButton#quitExam:hover {
     background-color: #eba0ac;
 }
 QPushButton#removeUrl {
     background-color: #f38ba8;
-    color: #11111b;
+    color: #1e1e2e;
 }
 QPushButton#removeUrl:hover {
     background-color: #eba0ac;
@@ -93,5 +93,5 @@ QComboBox QAbstractItemView {
 def apply_app_theme(application):
     application.setStyleSheet(APP_STYLESHEET)
     palette = application.palette()
-    palette.setColor(QPalette.ColorRole.ButtonText, QColor("#11111b"))
+    palette.setColor(QPalette.ColorRole.ButtonText, QColor("#cdd6f4"))
     application.setPalette(palette)

@@ -45,5 +45,6 @@
     "cluster_discovery_port": 8000,
     "cluster_replication_mode": "primary-replica",
     "feedback_url": "",
-    "feedback_label": ""
+    "feedback_label": "",
+    "password_saving_enabled": true
 }

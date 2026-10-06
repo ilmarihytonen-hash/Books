@@ -37,6 +37,7 @@ from configreader import load_config
 from credential_store import (
     get_login,
     origin_for_url,
+    password_saving_enabled,
     remove_login,
     save_login,
 )
@@ -70,16 +71,22 @@ class LoginDialog(QDialog):
         layout.addLayout(form)
 
         saved_login = get_login(origin)
+        saving_enabled = password_saving_enabled()
         if saved_login:
             self.username_input.setText(saved_login["username"])
             self.password_input.setText(saved_login["password"])
 
         self.status_label = QLabel()
         self.status_label.setWordWrap(True)
+        if not saving_enabled:
+            self.status_label.setText(
+                translate(language, "login_saving_disabled")
+            )
         layout.addWidget(self.status_label)
 
         buttons = QHBoxLayout()
         self.save_button = QPushButton(translate(language, "login_save"))
+        self.save_button.setEnabled(saving_enabled)
         self.save_button.clicked.connect(self._save)
         buttons.addWidget(self.save_button)
 

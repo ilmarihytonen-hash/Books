@@ -18,9 +18,10 @@ Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly
 
 Use the browser's top-left **Menu** for Home, the GNU GPL v3 license, Help,
 Feedback, Settings, and **Manage logins**. In Settings, change the interface
-language, default website, browser zoom, feedback destination, and feedback
-button text. Saved preferences are stored in `config.json` beside the app;
-Feedback can also be configured there.
+language, default website, browser zoom, and password-saving preference.
+Turning password saving off permanently removes saved website logins from this
+PC after confirmation. Configure the feedback destination and button text in
+`config.json` beside the app.
 
 Select **Manage logins** to save credentials for the current HTTPS website.
 Login data is encrypted with Windows Data Protection and can only be decrypted
