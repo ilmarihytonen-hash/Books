@@ -11,12 +11,16 @@ def application_dir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
+def local_appdata_dir():
+    base_dir = os.environ.get("LOCALAPPDATA")
+    if not base_dir:
+        base_dir = os.path.join(os.path.expanduser("~"), "AppData", "Local")
+    return base_dir
+
+
 def user_data_dir():
     if sys.platform == "win32" and getattr(sys, "frozen", False):
-        base_dir = os.environ.get("LOCALAPPDATA")
-        if not base_dir:
-            base_dir = os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        return os.path.join(base_dir, "Bookapp")
+        return os.path.join(local_appdata_dir(), "Bookapp")
     return application_dir()
 
 
@@ -30,12 +34,20 @@ def writable_path(filename):
 
 
 def migrate_legacy_file(filename):
-    """Copy existing per-user files from beside a frozen app on first run."""
-    source = os.path.join(application_dir(), filename)
+    """Copy existing files into the user data folder on first run."""
     destination = writable_path(filename)
-    if os.path.abspath(source) == os.path.abspath(destination):
+    if os.path.exists(destination):
         return
-    if os.path.exists(destination) or not os.path.isfile(source):
-        return
-    os.makedirs(os.path.dirname(destination), exist_ok=True)
-    shutil.copy2(source, destination)
+    legacy_dirs = [application_dir()]
+    if sys.platform == "win32" and getattr(sys, "frozen", False):
+        legacy_dirs.append(
+            os.path.join(local_appdata_dir(), "Programs", "Bookapp")
+        )
+    for legacy_dir in legacy_dirs:
+        source = os.path.join(legacy_dir, filename)
+        if os.path.abspath(source) == os.path.abspath(destination):
+            continue
+        if os.path.isfile(source):
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            shutil.copy2(source, destination)
+            return

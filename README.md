@@ -48,7 +48,8 @@ or a `mailto:` address. Set
 The destination is read when the menu item is clicked; restart Bookapp after
 changing the button label in the config file. On first run, existing
 `config.json`, `urls.yaml`, and `logins.dat` files beside an older executable
-are copied into the per-user data folder.
+or in the previous per-user install folder are copied into the per-user data
+folder.
 
 ## Download a release
 
