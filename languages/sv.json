@@ -26,6 +26,7 @@
   "settings_zoom": "Webbläsarzoom",
   "settings_password_saving": "Spara lösenord",
   "settings_password_saving_description": "Tillåt krypterad lagring av lösenord på den här datorn",
+  "settings_password_saving_unavailable": "Krypterad lösenordslagring är endast tillgänglig i Windows-versionen.",
   "settings_password_saving_disable_confirm": "Stänga av lösenordslagring och ta bort alla sparade webbplatsinloggningar permanent från den här datorn?",
   "settings_invalid_home_url": "Välj en giltig sparad webbplats som standard.",
   "settings_save_failed": "Kunde inte spara inställningarna: {error}",

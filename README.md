@@ -2,9 +2,10 @@
 
 PyQt6 website launcher with English, Finnish, and Swedish UI text. Translations
 are maintained separately in `languages\en.json`, `languages\fi.json`, and
-`languages\sv.json`. On Windows, saved websites, settings, logs, and encrypted
-logins are stored in `%LOCALAPPDATA%\Bookapp`, so the executable does not need
-to write beside itself.
+`languages\sv.json`. On Windows, saved websites, settings, logs, and encrypted logins are stored in
+`%LOCALAPPDATA%\Bookapp`. On Linux, the AppImage stores user data under
+`$XDG_DATA_HOME/Bookapp` (or `~/.local/share/Bookapp` when unset), so it does not
+need write access to its own file.
 
 ## Run from source
 
@@ -19,7 +20,8 @@ Run the packaged app with `Bookapp.bat` or `run_bookapp.bat`, or open
 own location, so the downloaded folder can be moved to another location.
 `Bookapp.bat` creates or updates `Bookapp.lnk` beside itself when run.
 For the packaged Windows app, `%LOCALAPPDATA%\Bookapp\logs\bookapp.log`
-contains timestamped logs. Source runs write to `logs\bookapp.log`.
+contains timestamped logs. For the AppImage, logs are under the Linux user data
+directory in `logs/bookapp.log`. Source runs write to `logs\bookapp.log`.
 
 ## Website logins and feedback
 
@@ -35,7 +37,9 @@ Login data is encrypted with Windows Data Protection and can only be decrypted
 by the same Windows user on this computer. Select **Fill fields** to fill
 matching visible login fields; Bookapp never submits the form automatically.
 The encrypted data is stored in `%LOCALAPPDATA%\Bookapp\logins.dat` for the
-packaged Windows app.
+packaged Windows app. Saved-login encryption currently uses Windows account
+protection and is not available in the Linux build; credentials can still be
+entered for filling fields during the current session.
 
 To configure the **Feedback** button, edit
 `%LOCALAPPDATA%\Bookapp\config.json` for the packaged Windows app (or the
@@ -60,14 +64,15 @@ folder.
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a new version tag, such as
-`v1.0.6`, to build and publish a release:
+`v1.0.7`, to build and publish a release:
 
 ```text
-git tag v1.0.6
-git push origin v1.0.6
+git tag v1.0.7
+git push origin v1.0.7
 ```
 
-The release contains `Bookapp.exe`, a portable Windows ZIP, and a source ZIP.
+The release contains `Bookapp.exe`, a portable Windows ZIP, a Linux AppImage,
+and a source ZIP.
 For a Windows 10/11 64-bit PC, download and extract the portable ZIP, then run
 `Bookapp.bat`. The bundle includes the packaged app, so Python does not need to
 be installed separately. The first launch creates or updates `Bookapp.lnk`
@@ -76,8 +81,21 @@ Bookapp stores its changing data under Local AppData rather than next to the
 executable. GitHub also automatically provides generated source-code archive
 links; those are separate from the uploaded assets.
 
-Pushes to `main` still build a temporary `Bookapp-windows` artifact,
-available from the workflow run for 30 days.
+For Linux x86_64 on Ubuntu 22.04 or a compatible newer distribution, download
+the AppImage, make it executable, then run it:
+
+```sh
+chmod +x Bookapp-v1.0.7-x86_64.AppImage
+./Bookapp-v1.0.7-x86_64.AppImage
+```
+
+Some distributions require FUSE 2 compatibility to run AppImages and common
+X11/XCB runtime libraries for the Qt browser. The build requires glibc 2.35 or
+newer. Bookapp keeps its data in the Linux user data directory and does not
+require root permissions.
+
+Pushes to `main` build temporary `Bookapp-windows` and
+`Bookapp-linux-appimage` artifacts, available from the workflow run for 30 days.
 
 ## Exam mode
 
@@ -89,4 +107,5 @@ behavior; it does not disable operating-system shortcuts or provide managed
 device lockdown.
 
 Build the Windows executable on Windows with `build_windows.bat`. The
-executable is generated locally and is not checked into this source tree.
+executable is generated locally and is not checked into this source tree. The
+Linux AppImage is built automatically by GitHub Actions.

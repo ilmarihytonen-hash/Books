@@ -1,6 +1,7 @@
 """Editable browser and password-saving preferences."""
 
 import logging
+import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -82,9 +83,20 @@ class SettingsDialog(QDialog):
         self.password_saving_checkbox = QCheckBox(
             translate(self.language, "settings_password_saving_description")
         )
+        self.password_saving_supported = sys.platform == "win32"
         self.password_saving_checkbox.setChecked(
-            self.config.get("password_saving_enabled", True) is True
+            self.password_saving_supported
+            and self.config.get("password_saving_enabled", True) is True
         )
+        self.password_saving_checkbox.setEnabled(
+            self.password_saving_supported
+        )
+        if not self.password_saving_supported:
+            self.password_saving_checkbox.setToolTip(
+                translate(
+                    self.language, "settings_password_saving_unavailable"
+                )
+            )
         form.addRow(
             translate(self.language, "settings_password_saving"),
             self.password_saving_checkbox,
@@ -112,9 +124,14 @@ class SettingsDialog(QDialog):
         return max(50, min(150, round(zoom / 10) * 10))
 
     def _save(self):
-        password_saving_enabled = self.password_saving_checkbox.isChecked()
+        password_saving_enabled = (
+            self.password_saving_checkbox.isChecked()
+            if self.password_saving_supported
+            else self.config.get("password_saving_enabled", True) is True
+        )
         if (
-            self.config.get("password_saving_enabled", True) is True
+            self.password_saving_supported
+            and self.config.get("password_saving_enabled", True) is True
             and not password_saving_enabled
         ):
             answer = QMessageBox.question(
@@ -145,13 +162,14 @@ class SettingsDialog(QDialog):
         updated_config = dict(self.config)
         updated_config["home_url"] = home_url
         updated_config["browser_zoom"] = self.zoom_slider.value()
-        updated_config["password_saving_enabled"] = password_saving_enabled
+        if self.password_saving_supported:
+            updated_config["password_saving_enabled"] = password_saving_enabled
 
         try:
             if home_url and home_url not in get_all_urls():
                 add_url(home_url)
             save_config(updated_config)
-            if not password_saving_enabled:
+            if self.password_saving_supported and not password_saving_enabled:
                 clear_logins()
             set_language(self.language_combo.currentData())
         except Exception as error:

@@ -26,6 +26,7 @@
   "settings_zoom": "Browser zoom",
   "settings_password_saving": "Password saving",
   "settings_password_saving_description": "Allow encrypted passwords to be saved on this PC",
+  "settings_password_saving_unavailable": "Encrypted password saving is only available in the Windows build.",
   "settings_password_saving_disable_confirm": "Turn off password saving and permanently delete all saved website logins from this PC?",
   "settings_invalid_home_url": "Select a valid saved website as the default.",
   "settings_save_failed": "Could not save settings: {error}",

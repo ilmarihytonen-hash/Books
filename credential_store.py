@@ -17,7 +17,10 @@ _CRYPTPROTECT_UI_FORBIDDEN = 0x1
 def password_saving_enabled():
     from configreader import load_config
 
-    return load_config().get("password_saving_enabled", True) is True
+    return (
+        sys.platform == "win32"
+        and load_config().get("password_saving_enabled", True) is True
+    )
 
 
 class _DataBlob(ctypes.Structure):

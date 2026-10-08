@@ -19,8 +19,16 @@ def local_appdata_dir():
 
 
 def user_data_dir():
-    if sys.platform == "win32" and getattr(sys, "frozen", False):
-        return os.path.join(local_appdata_dir(), "Bookapp")
+    if getattr(sys, "frozen", False):
+        if sys.platform == "win32":
+            return os.path.join(local_appdata_dir(), "Bookapp")
+        if sys.platform.startswith("linux"):
+            base_dir = os.environ.get("XDG_DATA_HOME")
+            if not base_dir or not os.path.isabs(base_dir):
+                base_dir = os.path.join(
+                    os.path.expanduser("~"), ".local", "share"
+                )
+            return os.path.join(base_dir, "Bookapp")
     return application_dir()
 
 

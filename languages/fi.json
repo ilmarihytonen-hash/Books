@@ -26,6 +26,7 @@
   "settings_zoom": "Selaimen zoomaus",
   "settings_password_saving": "Salasanojen tallennus",
   "settings_password_saving_description": "Salli salasanojen salattu tallennus tällä tietokoneella",
+  "settings_password_saving_unavailable": "Salasanojen salattu tallennus on käytettävissä vain Windows-versiossa.",
   "settings_password_saving_disable_confirm": "Poistetaanko salasanojen tallennus käytöstä ja poistetaanko kaikki tallennetut kirjautumistiedot pysyvästi tältä tietokoneelta?",
   "settings_invalid_home_url": "Valitse kelvollinen tallennettu sivusto oletukseksi.",
   "settings_save_failed": "Asetuksia ei voitu tallentaa: {error}",
