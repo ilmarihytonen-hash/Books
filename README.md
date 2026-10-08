@@ -9,10 +9,15 @@ to write beside itself.
 ## Run from source
 
 Install Python 3.10 or newer, then run `build_windows.bat` to install
-dependencies and create `dist\Bookapp.exe`. You can also install
-`requirements.txt` and run `py launcher.py`.
+dependencies and create `dist\Bookapp.exe`. You can also run
+`run_bookapp.bat`; if the executable is missing, it asks before running the
+install and build script. Alternatively, install `requirements.txt` and run
+`py launcher.py`.
 
-Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly.
+Run the packaged app with `Bookapp.bat` or `run_bookapp.bat`, or open
+`dist\Bookapp.exe` directly. The batch launchers use paths relative to their
+own location, so the downloaded folder can be moved to another location.
+`Bookapp.bat` creates or updates `Bookapp.lnk` beside itself when run.
 For the packaged Windows app, `%LOCALAPPDATA%\Bookapp\logs\bookapp.log`
 contains timestamped logs. Source runs write to `logs\bookapp.log`.
 
@@ -54,19 +59,22 @@ folder.
 ## Download a release
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
-larger than GitHub's standard file-size limit. Push a version tag such as
-`v1.0.0` to build and publish a release:
+larger than GitHub's standard file-size limit. Push a new version tag, such as
+`v1.0.5`, to build and publish a release:
 
 ```text
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.5
+git push origin v1.0.5
 ```
 
-The release contains `Bookapp.exe` and
-`Bookapp-source-v1.0.4.zip`. Download `Bookapp.exe` and place it in a folder
-you can access. Bookapp stores its changing data under Local AppData rather
-than next to the executable. GitHub also automatically provides generated
-source-code archive links; those are separate from the uploaded assets.
+The release contains `Bookapp.exe`, a portable Windows ZIP, and a source ZIP.
+For a Windows 10/11 64-bit PC, download and extract the portable ZIP, then run
+`Bookapp.bat`. The bundle includes the packaged app, so Python does not need to
+be installed separately. The first launch creates or updates `Bookapp.lnk`
+beside the extracted files. Alternatively, run `Bookapp.exe` directly.
+Bookapp stores its changing data under Local AppData rather than next to the
+executable. GitHub also automatically provides generated source-code archive
+links; those are separate from the uploaded assets.
 
 Pushes to `main` still build a temporary `Bookapp-windows` artifact,
 available from the workflow run for 30 days.
