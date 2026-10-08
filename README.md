@@ -60,11 +60,11 @@ folder.
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a new version tag, such as
-`v1.0.5`, to build and publish a release:
+`v1.0.6`, to build and publish a release:
 
 ```text
-git tag v1.0.5
-git push origin v1.0.5
+git tag v1.0.6
+git push origin v1.0.6
 ```
 
 The release contains `Bookapp.exe`, a portable Windows ZIP, and a source ZIP.
