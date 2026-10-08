@@ -7,8 +7,9 @@ are maintained separately in `languages\en.json`, `languages\fi.json`, and
 
 ## Run from source
 
-Install Python 3.10 or newer, then run `build_windows.bat` to install dependencies
-and create `dist\Bookapp.exe`. You can also install `requirements.txt` and run
+Install Python 3.10 or newer and Inno Setup, then run `build_windows.bat` to
+install dependencies and create `dist\Bookapp.exe` and
+`dist\Bookapp-Setup.exe`. You can also install `requirements.txt` and run
 `py launcher.py`.
 
 Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly.
@@ -45,7 +46,7 @@ changing the button label in the config file. A local `build_windows.bat` build
 copies `config.json` beside the executable. With Python/source runs, edit the
 project `config.json`.
 
-## Download a release
+## Install a release
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a version tag such as
@@ -56,13 +57,16 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-The release contains two uploaded assets: `Bookapp.exe` (the full Windows app)
-and `Bookapp-source-v1.0.0.zip` (the source tree). Download them separately from
-the repository's **Releases** page. GitHub also automatically provides generated
-source-code archive links; those are separate from the two uploaded assets.
+The release contains `Bookapp-Setup.exe` and
+`Bookapp-source-v1.0.0.zip`. Run the setup file to install Bookapp for the
+current Windows user; the installer creates a Start Menu shortcut and offers a
+desktop shortcut. It does not require administrator access. Configuration and
+saved website settings are preserved during upgrades and uninstalling. GitHub
+also automatically provides generated source-code archive links; those are
+separate from the uploaded assets.
 
-Pushes to `main` still build a temporary `Bookapp-windows` artifact, available
-from the workflow run for 30 days.
+Pushes to `main` still build a temporary `Bookapp-installer-windows` artifact,
+available from the workflow run for 30 days.
 
 ## Exam mode
 
@@ -73,5 +77,6 @@ red **Quit exam** button is the in-app exit. This is application-level kiosk
 behavior; it does not disable operating-system shortcuts or provide managed
 device lockdown.
 
-Build the Windows executable on Windows with `build_windows.bat`. The executable
-is generated locally and is not checked into this source tree.
+Build the Windows installer on Windows with Inno Setup installed and
+`build_windows.bat`. The installer is generated locally and is not checked into
+this source tree.
