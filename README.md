@@ -2,18 +2,19 @@
 
 PyQt6 website launcher with English, Finnish, and Swedish UI text. Translations
 are maintained separately in `languages\en.json`, `languages\fi.json`, and
-`languages\sv.json`. Saved websites and the selected language are stored in
-`urls.yaml` beside the application.
+`languages\sv.json`. On Windows, saved websites, settings, logs, and encrypted
+logins are stored in `%LOCALAPPDATA%\Bookapp`, so the executable does not need
+to write beside itself.
 
 ## Run from source
 
-Install Python 3.10 or newer and Inno Setup, then run `build_windows.bat` to
-install dependencies and create `dist\Bookapp.exe` and
-`dist\Bookapp-Setup.exe`. You can also install `requirements.txt` and run
-`py launcher.py`.
+Install Python 3.10 or newer, then run `build_windows.bat` to install
+dependencies and create `dist\Bookapp.exe`. You can also install
+`requirements.txt` and run `py launcher.py`.
 
 Run the packaged app with `run_bookapp.bat`, or open `dist\Bookapp.exe` directly.
-`logs\bookapp.log` contains timestamped Linux-style application logs.
+For the packaged Windows app, `%LOCALAPPDATA%\Bookapp\logs\bookapp.log`
+contains timestamped logs. Source runs write to `logs\bookapp.log`.
 
 ## Website logins and feedback
 
@@ -21,17 +22,20 @@ Use the browser's top-left **Menu** for Home, the GNU GPL v3 license, Help,
 Feedback, Settings, and **Manage logins**. In Settings, change the interface
 language, default website, browser zoom, and password-saving preference.
 Turning password saving off permanently removes saved website logins from this
-PC after confirmation. Configure the feedback destination and button text in
-`config.json` beside the app.
+PC after confirmation. For the packaged Windows app, configure the feedback
+destination and button text in `%LOCALAPPDATA%\Bookapp\config.json`.
 
 Select **Manage logins** to save credentials for the current HTTPS website.
 Login data is encrypted with Windows Data Protection and can only be decrypted
 by the same Windows user on this computer. Select **Fill fields** to fill
 matching visible login fields; Bookapp never submits the form automatically.
-The encrypted data is stored in `logins.dat` beside the application.
+The encrypted data is stored in `%LOCALAPPDATA%\Bookapp\logins.dat` for the
+packaged Windows app.
 
-To configure the **Feedback** button, edit `config.json` beside `Bookapp.exe`
-and set `feedback_url` to an HTTPS link or a `mailto:` address. Set
+To configure the **Feedback** button, edit
+`%LOCALAPPDATA%\Bookapp\config.json` for the packaged Windows app (or the
+project `config.json` for a source run) and set `feedback_url` to an HTTPS link
+or a `mailto:` address. Set
 `feedback_label` to customize the button text. For example:
 
 ```json
@@ -42,11 +46,11 @@ and set `feedback_url` to an HTTPS link or a `mailto:` address. Set
 ```
 
 The destination is read when the menu item is clicked; restart Bookapp after
-changing the button label in the config file. A local `build_windows.bat` build
-copies `config.json` beside the executable. With Python/source runs, edit the
-project `config.json`.
+changing the button label in the config file. On first run, existing
+`config.json`, `urls.yaml`, and `logins.dat` files beside an older executable
+are copied into the per-user data folder.
 
-## Install a release
+## Download a release
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a version tag such as
@@ -57,15 +61,13 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-The release contains `Bookapp-Setup.exe` and
-`Bookapp-source-v1.0.0.zip`. Run the setup file to install Bookapp for the
-current Windows user; the installer creates a Start Menu shortcut and offers a
-desktop shortcut. It does not require administrator access. Configuration and
-saved website settings are preserved during upgrades and uninstalling. GitHub
-also automatically provides generated source-code archive links; those are
-separate from the uploaded assets.
+The release contains `Bookapp.exe` and
+`Bookapp-source-v1.0.4.zip`. Download `Bookapp.exe` and place it in a folder
+you can access. Bookapp stores its changing data under Local AppData rather
+than next to the executable. GitHub also automatically provides generated
+source-code archive links; those are separate from the uploaded assets.
 
-Pushes to `main` still build a temporary `Bookapp-installer-windows` artifact,
+Pushes to `main` still build a temporary `Bookapp-windows` artifact,
 available from the workflow run for 30 days.
 
 ## Exam mode
@@ -77,6 +79,5 @@ red **Quit exam** button is the in-app exit. This is application-level kiosk
 behavior; it does not disable operating-system shortcuts or provide managed
 device lockdown.
 
-Build the Windows installer on Windows with Inno Setup installed and
-`build_windows.bat`. The installer is generated locally and is not checked into
-this source tree.
+Build the Windows executable on Windows with `build_windows.bat`. The
+executable is generated locally and is not checked into this source tree.

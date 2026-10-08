@@ -7,7 +7,7 @@ import sys
 from ctypes import wintypes
 from urllib.parse import urlsplit
 
-from app_paths import writable_path
+from app_paths import migrate_legacy_file, writable_path
 
 FILENAME = writable_path("logins.dat")
 _MAGIC = b"BOOKAPP-DPAPI-1\n"
@@ -117,6 +117,7 @@ def _dpapi(data, protect):
 
 
 def _load_logins():
+    migrate_legacy_file("logins.dat")
     try:
         with open(FILENAME, "rb") as file:
             encrypted = file.read()

@@ -4,12 +4,13 @@ import json
 import logging
 import os
 
-from app_paths import resource_path, writable_path
+from app_paths import migrate_legacy_file, resource_path, writable_path
 
 logger = logging.getLogger(__name__)
 
 
 def load_config(filename="config.json"):
+    migrate_legacy_file(filename)
     local_path = writable_path(filename)
     path = (
         local_path

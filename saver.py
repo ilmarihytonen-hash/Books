@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 
 import yaml
 
-from app_paths import resource_path, writable_path
+from app_paths import migrate_legacy_file, resource_path, writable_path
 
 logger = logging.getLogger(__name__)
 FILENAME = writable_path("urls.yaml")
@@ -36,6 +36,7 @@ def normalize_url(url):
 
 
 def load_data():
+    migrate_legacy_file("urls.yaml")
     if not os.path.exists(FILENAME):
         bundled_urls = resource_path("urls.yaml")
         source = bundled_urls if os.path.exists(bundled_urls) else None
