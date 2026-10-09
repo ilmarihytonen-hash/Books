@@ -64,19 +64,28 @@ folder.
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a new version tag, such as
-`v1.0.7`, to build and publish a release:
+`v1.0.8`, to build and publish a release:
 
 ```text
-git tag v1.0.7
-git push origin v1.0.7
+git tag v1.0.8
+git push origin v1.0.8
 ```
 
-The release contains `Bookapp.exe`, a portable Windows ZIP, a Linux AppImage,
-and a source ZIP.
-For a Windows 10/11 64-bit PC, download and extract the portable ZIP, then run
-`Bookapp.bat`. The bundle includes the packaged app, so Python does not need to
-be installed separately. The first launch creates or updates `Bookapp.lnk`
-beside the extracted files. Alternatively, run `Bookapp.exe` directly.
+The release contains a Windows installer, `Bookapp.exe`, a portable Windows
+ZIP, a Linux AppImage, and a source ZIP. For a Windows 10/11 64-bit PC, run
+`Bookapp-Setup.exe` to install Bookapp. The installer defaults to the current
+Windows user, installing under `%LOCALAPPDATA%\Programs\Bookapp` without
+administrator permissions. It also offers an all-users install that requests
+administrator access. The installer creates a Start menu shortcut and offers
+an optional desktop shortcut. The per-user install inherits the current user's
+file permissions. An all-users install uses the standard Windows shared-app
+permissions; Bookapp's changing data remains separate for each Windows user.
+
+To use the portable Windows build instead, download and extract the portable
+ZIP, then run `Bookapp.bat`. The bundle includes the packaged app, so Python
+does not need to be installed separately. The first launch creates or updates
+`Bookapp.lnk` beside the extracted files. Alternatively, run `Bookapp.exe`
+directly.
 Bookapp stores its changing data under Local AppData rather than next to the
 executable. GitHub also automatically provides generated source-code archive
 links; those are separate from the uploaded assets.
@@ -106,6 +115,9 @@ red **Quit exam** button is the in-app exit. This is application-level kiosk
 behavior; it does not disable operating-system shortcuts or provide managed
 device lockdown.
 
-Build the Windows executable on Windows with `build_windows.bat`. The
-executable is generated locally and is not checked into this source tree. The
-Linux AppImage is built automatically by GitHub Actions.
+Build the Windows executable on Windows with `build_windows.bat`. To also
+build `dist\Bookapp-Setup.exe`, install Inno Setup 6 and run
+`build_installer.bat`. The executable and installer are generated locally and
+are not checked into this source tree. GitHub Actions builds and publishes the
+installer for releases. The Linux AppImage is built automatically by GitHub
+Actions.

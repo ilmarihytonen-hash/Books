@@ -101,6 +101,10 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress --yes
+
       - name: Build executable
         shell: cmd
         run: >-
@@ -112,6 +116,22 @@ jobs:
           --add-data "languages\fi.json;languages"
           --add-data "languages\sv.json;languages"
           launcher.py
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            throw "Inno Setup compiler was not found at $iscc"
+          }
+          $version = "0.2.0-beta.1"
+          if ($env:GITHUB_REF_TYPE -eq "tag") {
+            $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          }
+          & $iscc "/DMyAppVersion=$version" "Bookapp.iss"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       - name: Create source archive
         if: startsWith(github.ref, 'refs/tags/v')
@@ -156,12 +176,14 @@ jobs:
             Invoke-RestMethod -Method Delete -Uri $artifact.url -Headers $headers
           }
 
-      - name: Upload executable
+      - name: Upload Windows builds
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: Bookapp-windows
-          path: dist/Bookapp.exe
+          path: |
+            dist/Bookapp.exe
+            dist/Bookapp-Setup.exe
           if-no-files-found: error
           retention-days: 30
 
@@ -172,13 +194,14 @@ jobs:
           name: Bookapp ${{ github.ref_name }}
           generate_release_notes: true
           body: |
-            **Windows 10/11 (64-bit):** Download and extract `Bookapp-portable-${{ github.ref_name }}.zip`, then run `Bookapp.bat`. No separate Python installation is required. The first launch creates or updates `Bookapp.lnk` beside the extracted files.
+            **Windows 10/11 (64-bit):** Download and run `Bookapp-Setup.exe` to install Bookapp. The installer defaults to the current user and does not require administrator permissions; you can choose an all-users install, which requests administrator access. It creates a Start menu shortcut and offers an optional desktop shortcut. No separate Python installation is required. To use the portable version instead, download and extract `Bookapp-portable-${{ github.ref_name }}.zip`, then run `Bookapp.bat`.
 
             **Linux (x86_64):** Download `Bookapp-${{ github.ref_name }}-x86_64.AppImage`, make it executable with `chmod +x Bookapp-${{ github.ref_name }}-x86_64.AppImage`, and run it. It is built on Ubuntu 22.04 (glibc 2.35) and requires FUSE 2 compatibility plus the usual X11/XCB runtime libraries.
 
             Alternatively, download and run `Bookapp.exe` directly on Windows. It does not need administrator permissions.
           files: |
             dist/Bookapp.exe
+            dist/Bookapp-Setup.exe
             dist/Bookapp-portable-${{ github.ref_name }}.zip
             dist/Bookapp-${{ github.ref_name }}-x86_64.AppImage
             dist/Bookapp-source-${{ github.ref_name }}.zip
