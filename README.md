@@ -64,11 +64,11 @@ folder.
 
 The executable is not committed to Git because the packaged Qt WebEngine app is
 larger than GitHub's standard file-size limit. Push a new version tag, such as
-`v1.0.8`, to build and publish a release:
+`v1.0.9`, to build and publish a release:
 
 ```text
-git tag v1.0.8
-git push origin v1.0.8
+git tag v1.0.9
+git push origin v1.0.9
 ```
 
 The release contains a Windows installer, `Bookapp.exe`, a portable Windows
@@ -77,9 +77,9 @@ ZIP, a Linux AppImage, and a source ZIP. For a Windows 10/11 64-bit PC, run
 Windows user, installing under `%LOCALAPPDATA%\Programs\Bookapp` without
 administrator permissions. It also offers an all-users install that requests
 administrator access. The installer creates a Start menu shortcut and offers
-an optional desktop shortcut. The per-user install inherits the current user's
-file permissions. An all-users install uses the standard Windows shared-app
-permissions; Bookapp's changing data remains separate for each Windows user.
+an optional desktop shortcut using the Bookapp logo. Standard users have full
+control over the Bookapp install folder and executable; Bookapp's changing data
+remains separate for each Windows user.
 
 To use the portable Windows build instead, download and extract the portable
 ZIP, then run `Bookapp.bat`. The bundle includes the packaged app, so Python

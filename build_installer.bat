@@ -14,7 +14,7 @@ if not exist "%ISCC%" (
     exit /b 1
 )
 
-"%ISCC%" /DMyAppVersion=0.2.0-beta.1 "Bookapp.iss"
+"%ISCC%" /DMyAppVersion=1.0.9 "Bookapp.iss"
 if errorlevel 1 (
     echo Installer build failed. See the error output above.
     exit /b 1

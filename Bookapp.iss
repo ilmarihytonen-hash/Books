@@ -1,6 +1,6 @@
 #define MyAppName "Bookapp"
 #ifndef MyAppVersion
-  #define MyAppVersion "0.2.0-beta.1"
+  #define MyAppVersion "1.0.9"
 #endif
 
 [Setup]
@@ -16,6 +16,7 @@ ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 OutputDir=dist
 OutputBaseFilename=Bookapp-Setup
+SetupIconFile=bookapplogo.ico
 UninstallDisplayIcon={app}\Bookapp.exe
 Compression=lzma2
 SolidCompression=yes
@@ -25,11 +26,15 @@ WizardStyle=modern
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
 
 [Files]
-Source: "dist\Bookapp.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Bookapp.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full
+Source: "bookapplogo.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\Bookapp"; Filename: "{app}\Bookapp.exe"; WorkingDir: "{app}"
-Name: "{autodesktop}\Bookapp"; Filename: "{app}\Bookapp.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autoprograms}\Bookapp"; Filename: "{app}\Bookapp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\bookapplogo.ico"
+Name: "{autodesktop}\Bookapp"; Filename: "{app}\Bookapp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\bookapplogo.ico"; Tasks: desktopicon
+
+[Dirs]
+Name: "{app}"; Permissions: users-full
 
 [Run]
 Filename: "{app}\Bookapp.exe"; Description: "Launch Bookapp"; Flags: postinstall nowait skipifsilent

@@ -194,7 +194,7 @@ jobs:
           name: Bookapp ${{ github.ref_name }}
           generate_release_notes: true
           body: |
-            **Windows 10/11 (64-bit):** Download and run `Bookapp-Setup.exe` to install Bookapp. The installer defaults to the current user and does not require administrator permissions; you can choose an all-users install, which requests administrator access. It creates a Start menu shortcut and offers an optional desktop shortcut. No separate Python installation is required. To use the portable version instead, download and extract `Bookapp-portable-${{ github.ref_name }}.zip`, then run `Bookapp.bat`.
+            **Windows 10/11 (64-bit):** Download and run `Bookapp-Setup.exe` to install Bookapp. The installer defaults to the current user and does not require administrator permissions; you can choose an all-users install, which requests administrator access. It creates a Start menu shortcut and offers an optional desktop shortcut using the Bookapp logo. Standard users have full control over the Bookapp install folder and executable. No separate Python installation is required. To use the portable version instead, download and extract `Bookapp-portable-${{ github.ref_name }}.zip`, then run `Bookapp.bat`.
 
             **Linux (x86_64):** Download `Bookapp-${{ github.ref_name }}-x86_64.AppImage`, make it executable with `chmod +x Bookapp-${{ github.ref_name }}-x86_64.AppImage`, and run it. It is built on Ubuntu 22.04 (glibc 2.35) and requires FUSE 2 compatibility plus the usual X11/XCB runtime libraries.
 
